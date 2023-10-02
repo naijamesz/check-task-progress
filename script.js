@@ -1,0 +1,46 @@
+// JS updates <progress> element and .prog pie radius use var because function scope and flexible
+var checkbox = document.getElementsByName('progress-tasks'),
+  checkboxLen = checkbox.length,
+  checkboxChecked = [],
+  i,
+  meter = document.getElementsByName('progress-tasks-percentage')[0],
+  meterLabel = document.querySelector('.progress-tasks-completed'),
+  meterCurrVal,
+  progRadius = document.querySelector('.prog'),
+  progRadiusPie,
+  deg
+
+// Update progress value
+function updateProgressVal() {
+  meterCurrVal = Math.floor((checkboxChecked.length / checkboxLen) * 100)
+  meter.setAttribute('value', meterCurrVal)
+  meterLabel.getElementsByTagName('span')[0].innerHTML = meterCurrVal
+
+  progRadius.innerHTML =
+    '<div class="percent"></div><div id="slice"' +
+    (meterCurrVal > 50 ? ' class="gt50"' : '') +
+    '><div class="pie"></div>' +
+    (meterCurrVal > 50 ? '<div class="pie fill"></div>' : '') +
+    '</div>'
+  // 360 = 100%
+  deg = (360 / 100) * meterCurrVal
+  progRadiusPie = document.querySelector('#slice .pie')
+  progRadiusPie.style.mozTransform = 'rotate(' + deg + 'deg)'
+  progRadiusPie.style.webkitTransform = 'rotate(' + deg + 'deg)'
+  progRadiusPie.style.oTransform = 'rotate(' + deg + 'deg)'
+  progRadiusPie.style.msTransform = 'rotate(' + deg + 'deg)'
+  progRadiusPie.style.transform = 'rotate(' + deg + 'deg)'
+}
+
+for (i = 0; i < checkboxLen; i++) {
+  if (checkbox[i].checked) {
+    checkboxChecked.push(checkbox[i])
+  }
+
+  checkbox[i].onchange = function () {
+    this.checked ? checkboxChecked.push(this) : checkboxChecked.splice(checkboxChecked.indexOf(this), 1)
+    updateProgressVal()
+  }
+}
+
+updateProgressVal()
